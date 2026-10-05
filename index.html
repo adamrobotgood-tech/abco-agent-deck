@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#05060a">
+  <meta name="description" content="SINGULARITY — Agent Command Deck. Ops console for ABCO agents powered by Grok Bot / xAI.">
+  <meta property="og:title" content="SINGULARITY // Agent Command Deck | Grok Bot by xAI">
+  <meta property="og:description" content="Interactive ops console for ABCO agents. Dispatch missions. Watch the fleet ship.">
+  <meta property="og:type" content="website">
+  <title>SINGULARITY // Agent Command Deck · Grok Bot by xAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- HERO STRIP -->
+  <header class="hero-strip" role="banner">
+    <div class="hero-left">
+      <span class="sys-mark" aria-hidden="true"></span>
+      <div class="hero-titles">
+        <h1>SINGULARITY <span class="slash">//</span> Agent Command Deck</h1>
+        <p class="hero-sub">ABCO SYS · live agent choreography</p>
+      </div>
+    </div>
+    <div class="hero-meta" aria-label="Project metadata">
+      <span class="chip chip-meta">Project 04/04</span>
+      <span class="chip chip-meta">Powered by Grok Bot</span>
+      <a class="chip chip-link" href="https://x.ai" target="_blank" rel="noopener noreferrer">xAI</a>
+    </div>
+    <div class="hero-actions">
+      <button type="button" class="icon-btn" id="btn-sound" aria-pressed="false" title="Toggle soft UI sounds (off by default)">
+        <span class="ico" aria-hidden="true">♪</span>
+        <span class="lbl">Sound</span>
+      </button>
+      <button type="button" class="icon-btn" id="btn-help" title="Keyboard shortcuts (?)">
+        <span class="ico" aria-hidden="true">?</span>
+        <span class="lbl">Help</span>
+      </button>
+      <button type="button" class="btn-cmd" id="btn-palette" title="Open command palette (⌘K)">
+        <kbd>⌘K</kbd>
+        <span>Dispatch</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MISSION BOARD -->
+  <section class="mission-board" aria-label="Mission board">
+    <div class="board-head">
+      <h2>Mission Board</h2>
+      <p class="board-hint">Click a card or press <kbd>⌘K</kbd> to dispatch</p>
+    </div>
+    <div class="mission-grid" id="mission-grid" role="list">
+      <!-- filled by JS -->
+    </div>
+  </section>
+
+  <!-- MAIN DECK -->
+  <main class="deck" id="deck">
+    <!-- LEFT: Agent roster -->
+    <aside class="panel panel-roster" aria-labelledby="roster-title">
+      <div class="panel-head">
+        <h2 id="roster-title">Agent Roster</h2>
+        <span class="live-pill" id="fleet-status"><span class="pulse"></span> Fleet online</span>
+      </div>
+      <ul class="roster" id="roster" role="list">
+        <!-- filled by JS -->
+      </ul>
+      <footer class="panel-foot mono">
+        <span>ABCO // Edit. Anything.</span>
+        <a href="https://abcomedia.net" target="_blank" rel="noopener noreferrer">abcomedia.net</a>
+      </footer>
+    </aside>
+
+    <!-- CENTER: Transcript -->
+    <section class="panel panel-transcript" aria-labelledby="log-title">
+      <div class="panel-head">
+        <h2 id="log-title">Mission Log</h2>
+        <div class="log-tools">
+          <button type="button" class="text-btn" id="btn-clear-log" title="Clear log">Clear</button>
+          <span class="mono dim" id="clock">--:--:--</span>
+        </div>
+      </div>
+      <div class="transcript" id="transcript" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="boot-banner" id="boot-banner">
+          <p class="mono"><span class="cyan">SYS</span> Singularity deck initialized · Grok Bot ready</p>
+          <p class="mono dim">Awaiting mission dispatch — press <kbd>?</kbd> for shortcuts</p>
+        </div>
+      </div>
+      <div class="compose-bar" aria-hidden="true">
+        <span class="prompt-mark">›</span>
+        <span class="compose-hint">Agents stream tool calls here · no backend required</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: Artifacts -->
+    <aside class="panel panel-artifacts" aria-labelledby="art-title">
+      <div class="panel-head">
+        <h2 id="art-title">Artifacts</h2>
+        <span class="chip chip-meta" id="artifact-count">0 links</span>
+      </div>
+      <div class="artifact-list" id="artifacts">
+        <!-- seeded by JS -->
+      </div>
+    </aside>
+  </main>
+
+  <footer class="deck-footer">
+    <span>Powered by <a href="https://x.ai" target="_blank" rel="noopener noreferrer">xAI</a> · Grok Bot</span>
+    <span class="sep">·</span>
+    <span>Showcase for <a href="https://abcomedia.net" target="_blank" rel="noopener noreferrer">ABCO Media</a></span>
+    <span class="sep">·</span>
+    <span class="dim">Static · GitHub Pages ready</span>
+  </footer>
+
+  <!-- COMMAND PALETTE -->
+  <div class="overlay" id="palette-overlay" hidden>
+    <div class="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title">
+      <div class="palette-head">
+        <span class="prompt-mark cyan">›</span>
+        <input type="text" id="palette-input" placeholder="Dispatch a mission…" autocomplete="off" spellcheck="false" aria-label="Command palette search">
+        <kbd class="esc-hint">esc</kbd>
+      </div>
+      <p class="palette-label" id="palette-title">Available missions</p>
+      <ul class="palette-list" id="palette-list" role="listbox"></ul>
+      <p class="palette-foot mono dim">↑↓ navigate · ↵ run · esc close</p>
+    </div>
+  </div>
+
+  <!-- HELP OVERLAY -->
+  <div class="overlay" id="help-overlay" hidden>
+    <div class="help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <div class="help-head">
+        <h2 id="help-title">Keyboard Shortcuts</h2>
+        <button type="button" class="icon-btn" id="btn-help-close" aria-label="Close help">✕</button>
+      </div>
+      <dl class="shortcuts">
+        <div><dt><kbd>⌘</kbd><kbd>K</kbd> / <kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Open command palette</dd></div>
+        <div><dt><kbd>?</kbd></dt><dd>Toggle this help</dd></div>
+        <div><dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Dispatch mission by number</dd></div>
+        <div><dt><kbd>Esc</kbd></dt><dd>Close overlays / cancel stream</dd></div>
+        <div><dt><kbd>S</kbd></dt><dd>Toggle soft UI sounds</dd></div>
+        <div><dt><kbd>C</kbd></dt><dd>Clear mission log</dd></div>
+      </dl>
+      <p class="help-note">All streams are client-side simulations — no API keys, no backend. Built to ship on GitHub Pages.</p>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
